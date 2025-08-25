@@ -12,9 +12,15 @@ screen_height = 600
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption("贝塞尔曲线路径")
 
+counter = 0
+
+sss='''abcdefghijklmnopqrstuvwxyz'''
 # 加载人物素材
-character = pygame.image.load("Code/images/Dragon - Fully Animated/Attack 1/001.png")
+character = pygame.image.load("Code/images/Dragon - Fully Animated/Attack 1/001.png").convert_alpha()  # 加载角色图像
+character = pygame.transform.scale(character, (character.get_width() // 3, character.get_height() // 3))  # 缩放
+character = pygame.transform.flip(character, True, False)  # 水平翻转（左右）
 character_rect = character.get_rect()
+
 
 # 设置初始位置
 character_rect.center = (100, 100)
@@ -51,29 +57,52 @@ speed = 1
 current_waypoint = 0
 is_moving = False
 
+def handle_text_input(event):
+    global counter, is_moving
+    # print(counter)
+    if event.type == pygame.TEXTINPUT: pass  # event.text
+        
+    if event.type == pygame.KEYDOWN:         # event.unicode
+        print(event.unicode)
+        # print(counter)
+        if event.unicode == sss[counter]: 
+            print("ok")
+            is_moving = True
+        
+        else: 
+            print("error")
+            is_moving = False
+        counter += 1
+        # print(pygame.key.name(event.key))    #这种可以显示非字符按键的名字
+
+        # if event.key == pygame.K_a:  # 按下A键开始移动
+        #     is_moving = True
+
+def move_character():
+    global is_moving, current_waypoint
+    # 如果正在移动，更新位置
+    if is_moving and current_waypoint < len(waypoints):
+        character_rect.center = waypoints[current_waypoint]
+        current_waypoint += speed
+        is_moving = False
+    
+    # 如果到达最后一个点，停止移动
+    if current_waypoint >= len(waypoints):
+        is_moving = False
+
 # 游戏主循环
 clock = pygame.time.Clock()
 running = True
 
 while running:
     for event in pygame.event.get():
+
         if event.type == pygame.QUIT:
             running = False
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_a:  # 按下A键开始移动
-                is_moving = True
-                current_waypoint = 0
-                character_rect.center = waypoints[0]
-    
-    # 如果正在移动，更新位置
-    if is_moving and current_waypoint < len(waypoints):
-        character_rect.center = waypoints[current_waypoint]
-        current_waypoint += speed
-    
-    # 如果到达最后一个点，停止移动
-    if current_waypoint >= len(waypoints):
-        is_moving = False
-    
+
+        handle_text_input(event)
+
+    move_character()
     # 绘制
     screen.fill((0, 0, 0))
     screen.blit(character, character_rect)

@@ -8,7 +8,7 @@ FPS = 60
 # Track settings
 ROAD_WIDTH = 120
 ROAD_CURVE_POINTS = [
-    (100, HEIGHT//2),  # 起点
+    (10, HEIGHT//2),  # 起点
     (300, HEIGHT//2 - 100),  # 第一个转弯点
     (500, HEIGHT//2 + 50),   # 第二个转弯点
     (700, HEIGHT//2 - 80),   # 第三个转弯点
@@ -30,7 +30,7 @@ GREEN = (50, 255, 100)
 YELLOW = (255, 255, 100)
 PURPLE = (180, 50, 230)
 DARK_BLUE = (20, 30, 60)
-LIGHT_BLUE = (100, 180, 255)
+LIGHT_BLUE = (0, 255, 255)
 
 # Game settings
 INITIAL_THIEF_SPEED = 0.2
@@ -45,8 +45,8 @@ PARTICLE_SPEED = (0.5, 2)
 PARTICLE_SIZE = (2, 5)
 
 # Text settings
-TITLE_FONT_SIZE = 48
-MAIN_FONT_SIZE = 32
+TITLE_FONT_SIZE = 40
+MAIN_FONT_SIZE  = 25
 SMALL_FONT_SIZE = 24
 
 # Sound files
@@ -59,9 +59,20 @@ SOUND_FILES = {
 
 # Word list for typing
 WORD_LIST = [
-    "python", "programming", "keyboard", "velocity", "algorithm",
-    "function", "variable", "statement", "conditional", "iteration",
-    "dictionary", "exception", "framework", "generator", "decorator",
-    "inheritance", "polymorphism", "encapsulation", "abstraction",
-    "interface", "module", "package", "library", "dynamic", "static"
+'''
+In the heart of the forest, sunlight filters through the leaves, creating a dappled pattern on the ground. The gentle rustle of leaves and the sweet chirping of birds form a harmonious melody. This is the enchanting beauty of nature, a sight that soothes the soul.
+'''
 ]
+
+# Character settings
+CHARACTER_SETTINGS = {
+    'A': {
+        'position': ROAD_CURVE_POINTS[0],  # 起点,
+        'speed': 1
+    },
+
+    'police': {
+        'position': (ROAD_CURVE_POINTS[0][0] + 10, ROAD_CURVE_POINTS[0][1]),  # 第二个转弯点
+        'speed': 8
+    }
+}

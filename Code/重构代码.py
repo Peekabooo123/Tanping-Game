@@ -84,10 +84,11 @@ class Game:
 
         #pygame.draw.line(surface,     color,       start_pos,           end_pos,           width=1)
 
+    def functions(self):
+        print("这是functions方法中的输出字符串。")
 
-    
     def load_character(self):
-        character = pygame.image.load("images/Dragon - Fully Animated/Attack 1/001.png").convert_alpha()  # 加载角色图像
+        character = pygame.image.load("images\Dragon - Fully Animated\Attack 1/001.png").convert_alpha()  # 加载角色图像
         character = pygame.transform.scale(character, (character.get_width() // 3, character.get_height() // 3))  # 缩放
         flipped_character = pygame.transform.flip(character, True, False)  # 水平翻转（左右）
 

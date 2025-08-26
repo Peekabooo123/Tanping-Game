@@ -45,6 +45,7 @@ YELLOW = (255, 255, 100)
 PURPLE = (180, 50, 230)
 DARK_BLUE = (20, 30, 60)
 LIGHT_BLUE = (0, 255, 255)
+LIGHT_GRAY = (100, 100, 100)
 
 # Game settings
 INITIAL_THIEF_SPEED = 0.2
@@ -73,10 +74,10 @@ SOUND_FILES = {
 
 # Word list for typing
 WORD_LIST = [
-'''
-In the heart of the forest, sunlight filters through the leaves, creating a dappled pattern on the ground. The gentle rustle of leaves and the sweet chirping of birds form a harmonious melody. This is the enchanting beauty of nature, a sight that soothes the soul.
-'''
+    "In the heart of the forest, sunlight filters through the leaves, creating a dappled pattern on the ground. The gentle rustle of leaves and the sweet chirping of birds form a harmonious melody. This is the enchanting beauty of nature, a sight that soothes the soul."
 ]
+
+print(WORD_LIST[0][0])
 
 # Character settings
 CHARACTER_SETTINGS = {

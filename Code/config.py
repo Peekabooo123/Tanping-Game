@@ -1,21 +1,14 @@
 import pygame
+import sys
 
 # Screen settings
 WIDTH = 1200
 HEIGHT = 800
 FPS = 60
 
-# Track settings
-ROAD_WIDTH = 120
-# ROAD_CURVE_POINTS = [
-#     (10, HEIGHT//2),  # 起点
-#     (300, HEIGHT//2 - 100),  # 第一个转弯点
-#     (500, HEIGHT//2 + 50),   # 第二个转弯点
-#     (700, HEIGHT//2 - 80),   # 第三个转弯点
-#     (900, HEIGHT//2 + 30),   # 第四个转弯点
-#     (WIDTH - 100, HEIGHT//2) # 终点
-# ]
+STEPS = 500  # 贝塞尔曲线的细分步数
 
+ROAD_WIDTH = 120
 ROAD_CURVE_POINTS = [
     
     (100, 100),
@@ -64,6 +57,21 @@ TITLE_FONT_SIZE = 40
 MAIN_FONT_SIZE  = 25
 SMALL_FONT_SIZE = 24
 
+# Initialize Pygame
+pygame.init()
+# 字体设置 - 使用系统默认字体以支持中文
+try:
+    # 尝试使用微软雅黑或苹方字体（对中文支持较好的字体）
+    title_font = pygame.font.SysFont("Microsoft YaHei" if sys.platform == "win32" else "PingFang SC", TITLE_FONT_SIZE)
+    main_font = pygame.font.SysFont("Microsoft YaHei" if sys.platform == "win32" else "PingFang SC", MAIN_FONT_SIZE)
+    small_font = pygame.font.SysFont("Microsoft YaHei" if sys.platform == "win32" else "PingFang SC", SMALL_FONT_SIZE)
+except:
+    # 如果找不到上述字体，退回到系统默认字体
+    title_font = pygame.font.Font(None, TITLE_FONT_SIZE)
+    main_font = pygame.font.Font(None, MAIN_FONT_SIZE)
+    small_font = pygame.font.Font(None, SMALL_FONT_SIZE)
+
+
 # Sound files
 SOUND_FILES = {
     'correct': 'correct.wav',
@@ -74,16 +82,21 @@ SOUND_FILES = {
 
 # Word list for typing
 WORD_LIST = [
-    "In the heart of the forest, sunlight filters through the leaves, creating a dappled pattern on the ground. The gentle rustle of leaves and the sweet chirping of birds form a harmonious melody. This is the enchanting beauty of nature, a sight that soothes the soul."
+    "in the heart of the forest, sunlight filters through the leaves, creating a dappled pattern on the ground. The gentle rustle of leaves and the sweet chirping of birds form a harmonious melody. This is the enchanting beauty of nature, a sight that soothes the soul."
 ]
+# ssss = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,.!?  '
+# for char in ssss:
+#     print(main_font.size(char)[0]) # 计算单个字母的宽
 
-print(WORD_LIST[0][0])
+
+LETTER_WIDTH, LETTER_HEIGHT = main_font.size('m') # 计算单个字母的宽高
 
 # Character settings
 CHARACTER_SETTINGS = {
     'A': {
         'position': ROAD_CURVE_POINTS[0],  # 起点,
-        'speed': 1
+        'speed': int(2 * STEPS/len(WORD_LIST[0]) + 1), # 每次移动的点数
+        'image_path': "Code/images/Dragon - Fully Animated/Attack 1/001.png" if sys.platform == "darwin" else "Code/images/Dragon - Fully Animated Mac/Attack 1/001.png"   
     },
 
     'police': {
@@ -91,3 +104,12 @@ CHARACTER_SETTINGS = {
         'speed': 8
     }
 }
+# print(2 * STEPS / len(WORD_LIST[0]))
+
+# rec width and height
+REC_COLOR        = (30, 40, 70) # 矩形背景颜色
+REC_BORDER_COLOR = (60, 70, 120) # 矩形边
+REC_WIDTH        = WIDTH - 100
+REC_HEIGHT       = LETTER_HEIGHT * 4 + 20
+
+print(sys.platform)

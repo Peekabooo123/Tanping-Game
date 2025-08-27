@@ -95,11 +95,18 @@ TYPED_WORDS_ORIGIN_COORDINATES_Y = WORD_ORIGIN_COORDINATES_Y + LETTER_HEIGHT * 2
 # Character settings
 CHARACTER_SETTINGS = {
     'Character': {
-        'position': ROAD_CURVE_POINTS[0],  # 起点,
-        'speed': int(2 * STEPS/len(WORD_LIST[0]) + 1), # 每次移动的点数
-        'image_path': "Code/images/Dragon - Fully Animated/Attack 1/001.png" if sys.platform == "darwin" else "images/Dragon - Fully Animated/Attack 1/001.png",
-        'image_animation': ['images/Character/0.png', 'images/Character/1.png', 'images/Character/2.png', 'images/Character/3.png', 'images/Character/4.png', 'images/Character/5.png'],
+        'position'       : ROAD_CURVE_POINTS[0],  # 起点,
+        'image_animation': ['images/Character/0.png', 
+                            'images/Character/1.png', 
+                            'images/Character/2.png', 
+                            'images/Character/3.png', 
+                            'images/Character/4.png', 
+                            'images/Character/5.png',],
+        'bg_flag'  : True,
+        'flip_flag': True,
+        'speed'    : int(2 * STEPS/len(WORD_LIST[0]) + 1), # 每次移动的点数
     },
+
 }
 
 # print(2 * STEPS / len(WORD_LIST[0]))

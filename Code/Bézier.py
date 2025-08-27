@@ -1,12 +1,14 @@
 import pygame
 import sys
 from CONFIG_in_winsys import *
+from Characters import AnimatedSprite
 # 初始化pygame
 pygame.init()
 
 # 设置窗口
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Tanping Game")
+player = pygame.sprite.Sprite()
 
 # 加载背景图
 background = pygame.image.load(BACKGROUND_PIC[0]).convert()
@@ -20,30 +22,24 @@ typing_area = typing_area.subsurface(bbox).copy()
 typing_area = pygame.transform.scale(typing_area, (REC_WIDTH, REC_HEIGHT))
 
 #=============================记载角色动图===========================================
-for i in range(len(CHARACTER_SETTINGS['Character']['image_animation'])):
-    character_image = pygame.image.load(CHARACTER_SETTINGS['Character']['image_animation'][i]).convert_alpha()
-def character_animation():
-    screen.blit(character_image, (0, 0))
-    
+
+# 实例化
+CAT = AnimatedSprite(CHARACTER_SETTINGS['Character']['image_animation'], CHARACTER_SETTINGS['Character']['flip_flag'], CHARACTER_SETTINGS['Character']['bg_flag'], CHARACTER_SETTINGS['Character']['position'])
+# 创建 Group
+all_sprites = pygame.sprite.Group(CAT)
+
 #==================================================================================
 
 counter = 0
 color = WHITE
-typed_letter = 'skdfjaslkdjflsakdfj                                           lsadjf     lsakdfjlasdjfaksdjflsadkfjlasdfj     lsadjfasiodfjoasdigjoasdfigjaodsffjodsfjos                adfijaosdifjaslkdfasld46161651df3s1d3fs1ad3f2sa13df21sad3f5'
-# typed_letter = TYPED_WORDS
+typed_letter = "舗装された道路やコンクリートのビルが集まる都市は、大雨が降ると排水が追いつかなくなり「内水氾濫」が発生します。"
+typed_letter = TYPED_WORDS
 cursor_x = 70
 cursor_y = HEIGHT - 140 + LETTER_HEIGHT*2
 error_flag = False
 
-# 加载人物素材
-character = pygame.image.load(CHARACTER_SETTINGS['Character']['image_path']).convert_alpha()  # 加载角色图像
-character = pygame.transform.scale(character, (character.get_width() // 3, character.get_height() // 3))  # 缩放
-character = pygame.transform.flip(character, True, False)  # 水平翻转（左右）
 
-character_rect = character.get_rect()
-character_rect.center = (100, 100) # 设置初始位置
-
-# 绘制渐变背景
+# 绘制背景
 def draw_gradient_background():
     screen.blit(background, (0, 0))
 
@@ -193,11 +189,11 @@ def handle_text_input(event):
         #     is_moving = True
 
 def move_character():
-    screen.blit(character, character_rect)
+    # screen.blit(character, character_rect)
     global is_moving, current_waypoint
     # 如果正在移动，更新位置
     if is_moving and current_waypoint < len(waypoints):
-        character_rect.center = waypoints[current_waypoint]
+        CAT.rect.center = waypoints[current_waypoint]
         current_waypoint += CHARACTER_SETTINGS['Character']['speed']
         is_moving = False
     
@@ -225,10 +221,11 @@ while running:
     draw_bezier(screen, p4, p5, p6, p7, WHITE, STEPS)
     draw_typing_area()
     move_character()
-    show_letters(WORD_LIST[1], WORD_ORIGIN_COORDINATES_X, WORD_ORIGIN_COORDINATES_Y, BLUE)
+    show_letters(WORD_LIST[0], WORD_ORIGIN_COORDINATES_X, WORD_ORIGIN_COORDINATES_Y, BLUE)
     show_letters(typed_letter, TYPED_WORDS_ORIGIN_COORDINATES_X, TYPED_WORDS_ORIGIN_COORDINATES_Y, color)
     draw_cursor(cursor_x, cursor_y)
-    character_animation()
+    all_sprites.update()  # 调用 player_update()
+    all_sprites.draw(screen)
 
     pygame.display.flip()
     # clock.tick(1)

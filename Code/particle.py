@@ -2,7 +2,7 @@ import pygame
 import random
 import math
 from pygame import Vector2
-from config import *
+from CONFIG import *
 
 class Particle:
     def __init__(self, x, y, color):

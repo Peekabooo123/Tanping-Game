@@ -1,24 +1,42 @@
 import pygame
 import sys
-from CONFIG import *
+from CONFIG_in_winsys import *
 # 初始化pygame
 pygame.init()
 
 # 设置窗口
-screen_width = 1200
-screen_height = 800
-screen = pygame.display.set_mode((screen_width, screen_height))
-pygame.display.set_caption("贝塞尔曲线路径")
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Tanping Game")
+
+# 加载背景图
+background = pygame.image.load(BACKGROUND_PIC[0]).convert()
+background = pygame.transform.scale(background, (WIDTH, HEIGHT))
+
+# 加载打字区域
+typing_area = pygame.image.load(REC_PIC[0]).convert_alpha() # 自带透明通道
+bbox = typing_area.get_bounding_rect()
+# 裁剪出有效区域
+typing_area = typing_area.subsurface(bbox).copy()
+typing_area = pygame.transform.scale(typing_area, (REC_WIDTH, REC_HEIGHT))
+
+#=============================记载角色动图===========================================
+for i in range(len(CHARACTER_SETTINGS['Character']['image_animation'])):
+    character_image = pygame.image.load(CHARACTER_SETTINGS['Character']['image_animation'][i]).convert_alpha()
+def character_animation():
+    screen.blit(character_image, (0, 0))
+    
+#==================================================================================
 
 counter = 0
 color = WHITE
-typed_letter = []
+typed_letter = 'skdfjaslkdjflsakdfj                                           lsadjf     lsakdfjlasdjfaksdjflsadkfjlasdfj     lsadjfasiodfjoasdigjoasdfigjaodsffjodsfjos                adfijaosdifjaslkdfasld46161651df3s1d3fs1ad3f2sa13df21sad3f5'
+# typed_letter = TYPED_WORDS
 cursor_x = 70
 cursor_y = HEIGHT - 140 + LETTER_HEIGHT*2
 error_flag = False
 
 # 加载人物素材
-character = pygame.image.load(CHARACTER_SETTINGS['A']['image_path']).convert_alpha()  # 加载角色图像
+character = pygame.image.load(CHARACTER_SETTINGS['Character']['image_path']).convert_alpha()  # 加载角色图像
 character = pygame.transform.scale(character, (character.get_width() // 3, character.get_height() // 3))  # 缩放
 character = pygame.transform.flip(character, True, False)  # 水平翻转（左右）
 
@@ -26,21 +44,22 @@ character_rect = character.get_rect()
 character_rect.center = (100, 100) # 设置初始位置
 
 # 绘制渐变背景
-def draw_gradient_background(background_color):
-    for y in range(HEIGHT):
-        # 从深蓝色到黑色的渐变
-        color = (
-            max(0, background_color[0] * (HEIGHT - y) / HEIGHT),
-            max(0, background_color[1] * (HEIGHT - y) / HEIGHT),
-            max(0, background_color[2] * (HEIGHT - y) / HEIGHT)
-        )
-        pygame.draw.line(screen, color, (0, y), (WIDTH, y))
+def draw_gradient_background():
+    screen.blit(background, (0, 0))
 
 # 绘制打字区域
 def draw_typing_area():
-    # 绘制背景
-    pygame.draw.rect(screen, REC_COLOR, (50, HEIGHT - 150, REC_WIDTH, REC_HEIGHT)) # 矩形背景
-    pygame.draw.rect(screen, REC_BORDER_COLOR, (50, HEIGHT - 150, REC_WIDTH, REC_HEIGHT), 3) # 矩形边框,3表示边框宽度
+
+    typing_area = pygame.image.load(REC_PIC[0]).convert_alpha() # 自带透明通道
+    bbox = typing_area.get_bounding_rect()
+
+    # 裁剪出有效区域
+    typing_area = typing_area.subsurface(bbox).copy()
+    typing_area = pygame.transform.scale(typing_area, (REC_WIDTH, REC_HEIGHT))
+
+    screen.blit(typing_area, (REC_ORIGIN_COORDINATES_X, REC_ORIGIN_COORDINATES_Y))
+    # pygame.draw.rect(screen, REC_COLOR, (REC_ORIGIN_COORDINATES_X, REC_ORIGIN_COORDINATES_Y, REC_WIDTH, REC_HEIGHT)) # 矩形背景
+    # pygame.draw.rect(screen, REC_BORDER_COLOR, (REC_ORIGIN_COORDINATES_X, REC_ORIGIN_COORDINATES_Y, REC_WIDTH, REC_HEIGHT), 3) # 矩形边框,3表示边框宽度
 
 # Cursor
 def draw_cursor(cursor_x, cursor_y):
@@ -57,32 +76,32 @@ def draw_cursor(cursor_x, cursor_y):
         pygame.draw.line(screen, LIGHT_BLUE, (cursor_x-2, cursor_y + LETTER_HEIGHT), (cursor_x+2, cursor_y + LETTER_HEIGHT), width = 1)         # -
 
 # 显示文字
-def show_letters(WORD_LIST, first_x, first_y, color):
+def show_letters(WORD_LIST, current_x, current_y, color):
     global cursor_x, cursor_y
 
-    cursor_x = 70
-    cursor_y = HEIGHT - 140 + LETTER_HEIGHT*2
+    cursor_x = current_x + 1
+    cursor_y = current_y + LETTER_HEIGHT * 2
     for letter in WORD_LIST:
         letter_width, letter_height = main_font.size(letter)
         letter_surface = main_font.render(letter, True, color)
 
-        screen.blit(letter_surface, (first_x, first_y))
-        first_x += letter_width
-        if first_x > REC_WIDTH + 50 - 20:  # 换行
-            first_x = 70  # 重置x坐标
-            first_y += letter_height  # y坐标增加
-    cursor_x = first_x+1
-    cursor_y = first_y
+        screen.blit(letter_surface, (current_x, current_y))
+        current_x += letter_width
+        if current_x >= REC_WIDTH - 9:  # 换行
+            current_x = WORD_ORIGIN_COORDINATES_X  # 重置x坐标
+            current_y += LETTER_HEIGHT  # y坐标增加
+    cursor_x = current_x + 1
+    cursor_y = current_y
 
 # 控制点（原p0-p3）
-p0 = (100, 100)
-p1 = (250, 100)
-p2 = (400, 600)
-p3 = (600, 600)
-p4 = (1200-600, 600)
-p5 = (1200-400, 600)
-p6 = (1200-250, 100)
-p7 = (1200-100, 100)
+p0 = ROAD_CURVE_POINTS[0]
+p1 = ROAD_CURVE_POINTS[1]
+p2 = ROAD_CURVE_POINTS[2]
+p3 = ROAD_CURVE_POINTS[3]
+p4 = ROAD_CURVE_POINTS[4]
+p5 = ROAD_CURVE_POINTS[5]
+p6 = ROAD_CURVE_POINTS[6]
+p7 = ROAD_CURVE_POINTS[7]
 
 # 三次贝塞尔曲线函数
 def cubic_bezier(p0, p1, p2, p3, t):
@@ -138,28 +157,33 @@ def handle_text_input(event):
 
         elif event.key == pygame.K_BACKSPACE:
             if counter > 0:
-                typed_letter.pop()  # 删除最后一个字符
-                print(counter)
+                typed_letter = typed_letter[:-1]
                 counter -= 1
             else:
                 counter  = 0
+        
         else:
+            # 排除CapsLock（event.key == pygame.K_CAPSLOCK）
+            if (event.unicode.isalpha() or event.unicode in '123456789,.! ') and event.key != pygame.K_CAPSLOCK:  # 只处理字母输入，排除CapsLock
+                print(event.unicode)
+                if counter < len(WORD_LIST[0]):  # 防止越界
+                    # typed_letter.append(event.unicode)
+                    typed_letter += event.unicode
+                    counter += 1
+                    # print(typed_letter)
+                    # print(WORD_LIST[0][:counter])
+                    if typed_letter == WORD_LIST[0][:counter]:  #wanring 此处必须对比全部是否相同，而不能比较当前输入的字母
 
-            if counter < len(WORD_LIST[0]):  # 防止越界
-                typed_letter.append(event.unicode)
-                counter += 1
-                if typed_letter == WORD_LIST[0][:counter]:  #wanring 此处必须对比全部是否相同，而不能比较当前输入的字母
+                        print("ok")
+                        is_moving = True
+                        error_flag = False
 
-                    print("ok")
-                    is_moving = True
-                    error_flag = False
-
+                    else:
+                        error_flag = True
+                        print("error")     
+                        is_moving = False
                 else:
-                    error_flag = True
-                    print("error")     
                     is_moving = False
-            else:
-                is_moving = False
     color = GREEN if not error_flag else RED
     # error_flag = False
 
@@ -174,7 +198,7 @@ def move_character():
     # 如果正在移动，更新位置
     if is_moving and current_waypoint < len(waypoints):
         character_rect.center = waypoints[current_waypoint]
-        current_waypoint += CHARACTER_SETTINGS['A']['speed']
+        current_waypoint += CHARACTER_SETTINGS['Character']['speed']
         is_moving = False
     
     # 如果到达最后一个点，停止移动
@@ -186,8 +210,8 @@ clock = pygame.time.Clock()
 running = True
 
 while running:
-    # screen.fill(LIGHT_GRAY)
-    draw_gradient_background(DARK_BLUE)
+
+    draw_gradient_background()
     clock.tick(60)
 
     for event in pygame.event.get(): # 有事件才会进这个循环
@@ -201,9 +225,10 @@ while running:
     draw_bezier(screen, p4, p5, p6, p7, WHITE, STEPS)
     draw_typing_area()
     move_character()
-    show_letters(WORD_LIST[0],70, HEIGHT - 140, BLUE)
-    show_letters(typed_letter,70, HEIGHT - 140 + LETTER_HEIGHT*2, color)
+    show_letters(WORD_LIST[1], WORD_ORIGIN_COORDINATES_X, WORD_ORIGIN_COORDINATES_Y, BLUE)
+    show_letters(typed_letter, TYPED_WORDS_ORIGIN_COORDINATES_X, TYPED_WORDS_ORIGIN_COORDINATES_Y, color)
     draw_cursor(cursor_x, cursor_y)
+    character_animation()
 
     pygame.display.flip()
     # clock.tick(1)

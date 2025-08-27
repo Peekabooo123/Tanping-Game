@@ -2,8 +2,8 @@ import pygame
 import sys
 
 # Screen settings
-WIDTH = 1200
-HEIGHT = 800
+WIDTH = 1720
+HEIGHT = 960
 FPS = 60
 BACKGROUND_PIC = [
     "images/BackGround/parallax-mountain-bg.png", 
@@ -97,19 +97,23 @@ CHARACTER_SETTINGS = {
     'Character': {
         'position': ROAD_CURVE_POINTS[0],  # 起点,
         'speed': int(2 * STEPS/len(WORD_LIST[0]) + 1), # 每次移动的点数
-        'image_path': "Code/images/Dragon - Fully Animated/Attack 1/001.png" if sys.platform == "darwin" else "images/Dragon - Fully Animated/Attack 1/001.png"
+        'image_path': "Code/images/Dragon - Fully Animated/Attack 1/001.png" if sys.platform == "darwin" else "images/Dragon - Fully Animated/Attack 1/001.png",
+        'image_animation': ['images/Character/0.png', 'images/Character/1.png', 'images/Character/2.png', 'images/Character/3.png', 'images/Character/4.png', 'images/Character/5.png'],
     },
 }
 
 # print(2 * STEPS / len(WORD_LIST[0]))
 
 '''rec width and height'''
+REC_PIC = [
+    "images/BackGround/dialog_box.png"
+]
 REC_COLOR                    = (30, 40, 70)  # 矩形背景颜色
 REC_BORDER_COLOR             = (60, 70, 120) # 矩形边
 
-REC_ORIGIN_COORDINATES_X     = WORD_ORIGIN_COORDINATES_X - 5   # 矩形原点坐标X
-REC_ORIGIN_COORDINATES_Y     = WORD_ORIGIN_COORDINATES_Y       # 矩形原点坐标Y
+REC_ORIGIN_COORDINATES_X     = WORD_ORIGIN_COORDINATES_X - 10   # 矩形原点坐标X
+REC_ORIGIN_COORDINATES_Y     = WORD_ORIGIN_COORDINATES_Y - 5       # 矩形原点坐标Y
 
 REC_WIDTH                    = WIDTH - REC_ORIGIN_COORDINATES_X * 2
-REC_HEIGHT                   = LETTER_HEIGHT * 4 + 4
+REC_HEIGHT                   = LETTER_HEIGHT * 4 + 10
 

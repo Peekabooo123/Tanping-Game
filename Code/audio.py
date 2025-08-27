@@ -1,6 +1,6 @@
 import pygame
 from pygame import mixer
-from config import SOUND_FILES
+from CONFIG import SOUND_FILES
 
 class AudioManager:
     def __init__(self):

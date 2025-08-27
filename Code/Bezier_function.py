@@ -1,7 +1,7 @@
 import pygame
 import sys
 
-from config import ROAD_CURVE_POINTS
+from CONFIG import ROAD_CURVE_POINTS
 
 pygame.init()
 

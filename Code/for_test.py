@@ -2,7 +2,7 @@ import pygame
 import sys
 import random
 import time
-from config import *
+from CONFIG import *
 from particle import ParticleSystem
 from audio import AudioManager
 

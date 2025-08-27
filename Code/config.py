@@ -96,7 +96,7 @@ CHARACTER_SETTINGS = {
     'A': {
         'position': ROAD_CURVE_POINTS[0],  # 起点,
         'speed': int(2 * STEPS/len(WORD_LIST[0]) + 1), # 每次移动的点数
-        'image_path': "Code/images/Dragon - Fully Animated/Attack 1/001.png" if sys.platform == "darwin" else "Code/images/Dragon - Fully Animated Mac/Attack 1/001.png"   
+        'image_path': "Code/images/Dragon - Fully Animated/Attack 1/001.png" if sys.platform == "darwin" else "images\Dragon - Fully Animated\Attack 1/001.png"   
     },
 
     'police': {

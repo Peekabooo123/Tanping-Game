@@ -1,6 +1,6 @@
 import pygame
 import sys
-from config import *
+from CONFIG import *
 # 初始化pygame
 pygame.init()
 

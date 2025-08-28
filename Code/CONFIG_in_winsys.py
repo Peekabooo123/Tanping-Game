@@ -5,11 +5,7 @@ import sys
 WIDTH = 1720
 HEIGHT = 960
 FPS = 60
-BACKGROUND_PIC = [
-    "images/BackGround/parallax-mountain-bg.png", 
-    "images/BackGround/landscape.png",
-    ]
-
+BACKGROUND_PIC = ["images/BackGround/parallax-mountain-bg.png", ]
 
 STEPS = 500  # 贝塞尔曲线的细分步数
 
@@ -77,7 +73,8 @@ SOUND_FILES = {
 # Word list for typing
 WORD_LIST = [
     "In the heart of the forest, sunlight filters through the leaves, creating a dappled pattern on the ground. The gentle rustle of leaves and the sweet chirping of birds form a harmonious melody. This is the enchanting beauty of nature, a sight that soothes the soul.",
-    "舗装された道路やコンクリートのビルが集まる都市は、大雨が降ると排水が追いつかなくなり「内水氾濫」が発生します。あふれた水は地下室や地下街に集まり被害が出る危険があります。短時間に一気に状況が悪化するのが特徴で、気象情報などを見て早めに危険を察知し、安全な場所へ避難することが大切です。"
+    "舗装された道路やコンクリートのビルが集まる都市は、大雨が降ると排水が追いつかなくなり「内水氾濫」が発生します。あふれた水は地下室や地下街に集まり被害が出る危険があります。短時間に一気に状況が悪化するのが特徴で、気象情報などを見て早めに危険を察知し、安全な場所へ避難することが大切です。",
+    "在公园的长椅上，微风轻拂着树叶，孩子们在草地上欢快地奔跑。远处的湖面波光粼粼，老人们悠闲地散步，享受着宁静的午后时光。生活的美好往往藏在这些平凡的瞬间里。"
 ]
 # print(len(WORD_LIST[1]))
 
@@ -94,19 +91,25 @@ TYPED_WORDS_ORIGIN_COORDINATES_Y = WORD_ORIGIN_COORDINATES_Y + LETTER_HEIGHT * 2
 
 # Character settings
 CHARACTER_SETTINGS = {
-    'Character': {
-        'position'       : ROAD_CURVE_POINTS[0],  # 起点,
-        'image_animation': ['images/Character/0.png', 
-                            'images/Character/1.png', 
-                            'images/Character/2.png', 
-                            'images/Character/3.png', 
-                            'images/Character/4.png', 
-                            'images/Character/5.png',],
-        'bg_flag'  : True,
-        'flip_flag': True,
-        'speed'    : int(2 * STEPS/len(WORD_LIST[0]) + 1), # 每次移动的点数
+    'CAT': {
+        'position'      : ROAD_CURVE_POINTS[0],  # 起点,
+        'running'       : ['images/Character/CAT/run/0.png', 
+                            'images/Character/CAT/run/1.png', 
+                            'images/Character/CAT/run/2.png', 
+                            'images/Character/CAT/run/3.png', 
+                            'images/Character/CAT/run/4.png', 
+                            'images/Character/CAT/run/5.png',],
+        'walk'          : ['images/Character/CAT/walk/0.png', 
+                            'images/Character/CAT/walk/1.png', 
+                            'images/Character/CAT/walk/2.png', 
+                            'images/Character/CAT/walk/3.png', 
+                            'images/Character/CAT/walk/4.png', 
+                            'images/Character/CAT/walk/5.png',],
+        'bg_flag'      : True,
+        'flip_flag'    : True,
+        'speed'        : int(2 * STEPS/len(WORD_LIST[0]) + 1), # 每次移动的点数
     },
-
+    
 }
 
 # print(2 * STEPS / len(WORD_LIST[0]))

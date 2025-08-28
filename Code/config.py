@@ -94,7 +94,7 @@ TYPED_WORDS_ORIGIN_COORDINATES_Y = WORD_ORIGIN_COORDINATES_Y + LETTER_HEIGHT * 2
 
 # Character settings
 CHARACTER_SETTINGS = {
-    'Character': {
+    'A': {
         'position': ROAD_CURVE_POINTS[0],  # 起点,
         'speed': int(2 * STEPS/len(WORD_LIST[0]) + 1), # 每次移动的点数
         'image_path': "Code/images/Dragon - Fully Animated/Attack 1/001.png" if sys.platform == "darwin" else "images/Dragon - Fully Animated/Attack 1/001.png"

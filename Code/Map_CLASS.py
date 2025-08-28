@@ -6,6 +6,7 @@ class Map:
         self.width = width
         self.height = height
         self.segments = []  # 存储多段贝塞尔曲线的控制点
+        self.all_points = []
 
     def add_segment(self, p0, p1, p2, p3):
         """添加一段贝塞尔曲线的控制点"""
@@ -43,13 +44,16 @@ class Map:
 
     def get_curve_points(self, steps=100):
         """获取所有曲线的坐标点"""
-        all_points = []
         for seg in self.segments:
             p0, p1, p2, p3 = seg
             for i in range(steps + 1):
                 t = i / steps
-                all_points.append(self.cubic_bezier(p0, p1, p2, p3, t))
-        return all_points
+                self.all_points.append(self.cubic_bezier(p0, p1, p2, p3, t))
+        return self.all_points
+
+    def draw_bezier(self, screen, color, points,):
+        points = self.all_points if len(self.all_points) > 0 else (0,0)
+        pygame.draw.lines(screen, color, False, points, 2)
 
     def draw(self):
         """用pygame绘制地图曲线"""

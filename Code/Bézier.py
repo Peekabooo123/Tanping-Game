@@ -1,42 +1,20 @@
 import pygame
 import sys
+import numpy as np
 from CONFIG_in_winsys import *
 from Characters_CLASS import AnimatedSprite
 from Map_CLASS import Map
 from Background_CLASS import BackgroundSprite
+from Word_CLASS import WordClass
 # 初始化pygame
 pygame.init()
 
 # 设置窗口
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
+screen_flag = pygame.HWSURFACE | pygame.DOUBLEBUF
+screen = pygame.display.set_mode((WIDTH, HEIGHT), screen_flag)
 pygame.display.set_caption("Tanping Game")
 
-#====================加载背景====================================================
-
-# 实例化
-BACKGROUND = BackgroundSprite(BACKGROUND_PIC, position=(0, 0), frame_delay=100)
-# 创建group
-all_sprites_0 = pygame.sprite.Group(BACKGROUND)
-
-#================================================================================
-
-# 加载打字区域
-typing_area = pygame.image.load(REC_PIC[0]).convert_alpha() # 自带透明通道
-bbox = typing_area.get_bounding_rect()
-# 裁剪出有效区域
-typing_area = typing_area.subsurface(bbox).copy()
-typing_area = pygame.transform.scale(typing_area, (REC_WIDTH, REC_HEIGHT))
-
-#=============================加载角色动图===========================================
-
-# 实例化
-CAT      = AnimatedSprite(CHARACTER_SETTINGS['CAT']['running'], CHARACTER_SETTINGS['CAT']['flip_flag'], CHARACTER_SETTINGS['CAT']['bg_flag'], CHARACTER_SETTINGS['CAT']['position'], 80)
-WALK_CAT = AnimatedSprite(CHARACTER_SETTINGS['CAT']['walk'],    CHARACTER_SETTINGS['CAT']['flip_flag'], CHARACTER_SETTINGS['CAT']['bg_flag'], (100, 200),150)
-# 创建 Group
-all_sprites = pygame.sprite.Group(CAT, WALK_CAT)
-
-#==================================================================================
-
+#===================================================================================
 counter = 0
 color = WHITE
 typed_letter = "舗装された道路やコンクリートのビルが集まる都市は、大雨が降ると排水が追いつかなくなり「内水氾濫」が発生します。"
@@ -44,52 +22,52 @@ typed_letter = TYPED_WORDS
 cursor_x = 70
 cursor_y = HEIGHT - 140 + LETTER_HEIGHT*2
 error_flag = False
+#===================================================================================
 
-# 绘制打字区域
-def draw_typing_area():
 
-    typing_area = pygame.image.load(REC_PIC[0]).convert_alpha() # 自带透明通道
-    bbox = typing_area.get_bounding_rect()
+#====================加载背景========================================================
 
-    # 裁剪出有效区域
-    typing_area = typing_area.subsurface(bbox).copy()
-    typing_area = pygame.transform.scale(typing_area, (REC_WIDTH, REC_HEIGHT))
+# 实例化
+BACKGROUND    = BackgroundSprite(BACKGROUND_PIC)
+BACKGROUND_1  = BackgroundSprite(["images/BackGround/Background/parallax-mountain-mountains.png"])
+BACKGROUND_2  = BackgroundSprite(["images/BackGround/Background/parallax-mountain-montain-far.png"])
+BACKGROUND_3  = BackgroundSprite(["images/BackGround/Background/parallax-mountain-foreground-trees.png"])
+BACKGROUND_4  = BackgroundSprite(["images/BackGround/Background/parallax-mountain-trees.png"])  # 贴近底部显示
+TYPING_AREA   = BackgroundSprite(REC_PIC, box_flag = True, scale_size=(REC_WIDTH, REC_HEIGHT), position=(REC_ORIGIN_COORDINATES_X, REC_ORIGIN_COORDINATES_Y))
 
-    screen.blit(typing_area, (REC_ORIGIN_COORDINATES_X, REC_ORIGIN_COORDINATES_Y))
-    # pygame.draw.rect(screen, REC_COLOR, (REC_ORIGIN_COORDINATES_X, REC_ORIGIN_COORDINATES_Y, REC_WIDTH, REC_HEIGHT)) # 矩形背景
-    # pygame.draw.rect(screen, REC_BORDER_COLOR, (REC_ORIGIN_COORDINATES_X, REC_ORIGIN_COORDINATES_Y, REC_WIDTH, REC_HEIGHT), 3) # 矩形边框,3表示边框宽度
+# 创建group
+Background_group = pygame.sprite.Group(BACKGROUND,BACKGROUND_1,BACKGROUND_2,BACKGROUND_3,BACKGROUND_4,TYPING_AREA)
 
-# Cursor
-def draw_cursor(cursor_x, cursor_y):
-    import time
-    if int(time.time() * 2) % 2 == 0:
-        # shadow
-        # pygame.draw.line(screen, BLACK, (70+1, HEIGHT - 140 + LETTER_HEIGHT*2+3), (70+5, HEIGHT - 140 + LETTER_HEIGHT*2+3), width = 2)          # -
-        # pygame.draw.line(screen, BLACK, (70+3, HEIGHT - 140+3), (70+3, HEIGHT - 140 + 28+3), width = 2)                                         # |
-        # pygame.draw.line(screen, BLACK, (70+1, HEIGHT - 140 + LETTER_HEIGHT*2+28+3), (70+5, HEIGHT - 140 + LETTER_HEIGHT*2 + 28+3), width = 2)  # -
-        
-        # cursor
-        pygame.draw.line(screen, LIGHT_BLUE, (cursor_x-2, cursor_y), (cursor_x+2, cursor_y), width = 1)         # -
-        pygame.draw.line(screen, LIGHT_BLUE, (cursor_x, cursor_y), (cursor_x, cursor_y + LETTER_HEIGHT), width = 1)         # |
-        pygame.draw.line(screen, LIGHT_BLUE, (cursor_x-2, cursor_y + LETTER_HEIGHT), (cursor_x+2, cursor_y + LETTER_HEIGHT), width = 1)         # -
+#================================================================================
 
-# 显示文字
-def show_letters(WORD_LIST, current_x, current_y, color):
-    global cursor_x, cursor_y
+#=============================加载角色动图===========================================
 
-    cursor_x = current_x + 1
-    cursor_y = current_y + LETTER_HEIGHT * 2
-    for letter in WORD_LIST:
-        letter_width, letter_height = main_font.size(letter)
-        letter_surface = main_font.render(letter, True, color)
+# 实例化
+CAT      = AnimatedSprite(CHARACTER_SETTINGS['CAT']['running'], flip_flag=CHARACTER_SETTINGS['CAT']['flip_flag'], remove_bg_flag=CHARACTER_SETTINGS['CAT']['remove_bg_flag'], position=CHARACTER_SETTINGS['CAT']['position'], frame_delay=80)
+WALK_CAT = AnimatedSprite(CHARACTER_SETTINGS['CAT']['walk'],    flip_flag=CHARACTER_SETTINGS['CAT']['flip_flag'], remove_bg_flag=CHARACTER_SETTINGS['CAT']['remove_bg_flag'], position=(100, 500), frame_delay=150)
+# 创建 Group
+Character_group = pygame.sprite.Group( CAT, WALK_CAT )
 
-        screen.blit(letter_surface, (current_x, current_y))
-        current_x += letter_width
-        if current_x >= REC_WIDTH - 9:  # 换行
-            current_x = WORD_ORIGIN_COORDINATES_X  # 重置x坐标
-            current_y += LETTER_HEIGHT  # y坐标增加
-    cursor_x = current_x + 1
-    cursor_y = current_y
+#==================================================================================
+
+#=================================文字处理=================================================
+WORDS = WordClass(
+    position=(WORD_ORIGIN_COORDINATES_X, WORD_ORIGIN_COORDINATES_Y)
+)
+WORDS.load_text(    
+    text=WORD_LIST[0],
+    font_size=MAIN_FONT_SIZE,
+    color=BLUE,
+    )
+WORDS.build_cursor()
+#==================================================================================
+
+import pygame
+import math
+
+# 假设这些常量已定义
+LETTER_HEIGHT = 28
+LIGHT_BLUE = (0, 255, 255)
 
 # 控制点
 p0 = ROAD_CURVE_POINTS[0]
@@ -105,9 +83,9 @@ p7 = ROAD_CURVE_POINTS[7]
 
 #实例化
 MAP = Map(WIDTH, HEIGHT)
-MAP.add_segment(p0, p1, p2, p3)
-MAP.add_segment(p4, p5, p6, p7)
-waypoints = MAP.get_curve_points(steps=STEPS)
+waypoints_0 = MAP.bezier_curve(p0, p1, p2, p3,num_points=STEPS)
+waypoints_1 = MAP.bezier_curve(p4, p5, p6, p7,num_points=STEPS)
+waypoints = np.concatenate([waypoints_0, waypoints_1], axis=0)
 
 #=====================================================================================
 
@@ -167,32 +145,35 @@ def handle_text_input(event):
 clock = pygame.time.Clock()
 running = True
 
+
+def Painting():
+    global is_moving, cursor_x, cursor_y
+    # 绘制
+    # Background_group.update()  # 调用 update()函数
+    Background_group.draw(screen)
+    MAP.draw_bezier(screen)
+    is_moving = CAT.manual_moving(waypoints, is_moving, CHARACTER_SETTINGS['CAT']['speed'])
+    WALK_CAT.keep_moving(waypoints, CHARACTER_SETTINGS['CAT']['speed'])
+    print('yes')
+    WORDS.draw(screen, WORD_ORIGIN_COORDINATES_X, WORD_ORIGIN_COORDINATES_Y)  # 绘制文字
+
+    Character_group.update()  # 调用 update()函数
+    Character_group.draw(screen)
+
+
 while running:
 
-    all_sprites_0.draw(screen)
-    clock.tick(60)
-
-    for event in pygame.event.get(): # 有事件才会进这个循环
-        if event.type == pygame.QUIT:
+    events = pygame.event.get()  # 获取所有事件
+    for event in events: # 有事件才会进这个循环
+        if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
             running = False
 
         handle_text_input(event)
 
-    # 绘制
-    MAP.draw_bezier(screen, RED, waypoints)
-    draw_typing_area()
 
-    is_moving = CAT.manual_moving(waypoints, is_moving, CHARACTER_SETTINGS['CAT']['speed'])
-    WALK_CAT.keep_moving(waypoints, CHARACTER_SETTINGS['CAT']['speed'])
-
-    show_letters(WORD_LIST[0], WORD_ORIGIN_COORDINATES_X, WORD_ORIGIN_COORDINATES_Y, BLUE)
-    show_letters(typed_letter, TYPED_WORDS_ORIGIN_COORDINATES_X, TYPED_WORDS_ORIGIN_COORDINATES_Y, color)
-    draw_cursor(cursor_x, cursor_y)
-    all_sprites.update()  # 调用 update()函数
-    all_sprites.draw(screen)
-
+    Painting()
     pygame.display.flip()
-    # clock.tick(1)
+    clock.tick(60)
 
 pygame.quit()
 sys.exit()

@@ -28,15 +28,21 @@ class Map:
     #         self.add_segment(p0, p1, p2, p3)
 
 
-    # def linear_bezier(self, p0, p1, t):
-    #     """计算一次贝塞尔曲线上的点"""
-    #     x = (
-    #         (1 - t) * p0[0] + t * p1[0]
-    #     )
-    #     y = (
-    #         (1 - t) * p0[1] + t * p1[1]
-    #     )
-    #     return (x, y)
+    def linear_bezier(self, p0, p1, num_points=100):
+        """
+        向量化计算一次贝塞尔曲线上的点
+        p0, p1: 起点和终点，格式为(x, y)
+        num_points: 采样点数量
+        返回: numpy数组，形状为(num_points, 2)
+        """
+        t = np.linspace(0, 1, num_points, dtype=np.float64)
+        x = (1 - t) * p0[0] + t * p1[0]
+        y = (1 - t) * p0[1] + t * p1[1]
+
+        self.trajectory = np.column_stack((x, y))
+        # print(self.trajectory)
+        self.draw_trajectory()
+        return self.trajectory
 
     # def quadratic_bezier(self, p0, p1, p2, t):
     #     """计算二次贝塞尔曲线上的点"""
@@ -71,7 +77,7 @@ class Map:
     #================向量化，三次贝塞尔曲线================
     def bezier_curve(self, p0, p1, p2, p3, num_points=1000):
         """计算三次贝塞尔曲线上的点"""
-        t = np.linspace(0, 1, num_points, dtype=np.float32)
+        t = np.linspace(0, 1, num_points, dtype=np.float64)
 
         x = (
             (1 - t) ** 3 * p0[0]
@@ -87,15 +93,20 @@ class Map:
         )
 
         self.trajectory = np.column_stack((x, y))
+        self.draw_trajectory()
+        return self.trajectory  # (num_points, 2)
+
+    def draw_trajectory(self):
         # 在这里绘制轨迹， 先定义一个surface，把曲线画在surface上
         self.trajectory_surface = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
         # pygame.draw.lines(self.trajectory_surface, (0, 255, 255), False, self.trajectory.astype(int), 2) # 用直线连接的，不够平滑
         for point in self.trajectory:
             pygame.draw.circle(self.trajectory_surface, (0, 255, 255), point.astype(int), 1)
-        return np.column_stack((x, y))  # (num_points, 2)
+        # return np.column_stack((x, y))  # (num_points, 2)
 
 
     def draw_bezier(self, screen):
+        return
         # 每次循环直接blit这个surface，而不是重新绘制曲线
         screen.blit(self.trajectory_surface, (0, 0))
 

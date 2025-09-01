@@ -1,6 +1,6 @@
 import pygame
 import math
-from CONFIG_in_winsys import LETTER_HEIGHT, LIGHT_BLUE
+from CONFIG_in_winsys import LETTER_HEIGHT, LIGHT_BLUE, WORD_ORIGIN_COORDINATES_X, TYPED_WORDS_ORIGIN_COORDINATES_X, TYPED_WORDS_ORIGIN_COORDINATES_Y
 
 class WordClass:
     def __init__(self, position):
@@ -32,22 +32,24 @@ class WordClass:
         self.cursor_surface.fill((*LIGHT_BLUE, alpha))  # RGB + Alpha
 
         # 绘制到屏幕
-        self.cursor_rect = self.cursor_surface.get_rect(center=self.position)
+        self.cursor_x = TYPED_WORDS_ORIGIN_COORDINATES_X
+        self.cursor_rect = self.cursor_surface.get_rect()
     
-    def draw_cursor(self,screen):
+    def draw_cursor(self,screen,typed_text, color):
         # 获取时间（毫秒）
         blink_speed = 10
         t = pygame.time.get_ticks() / 1000.0  # 转换为秒
-        print(t)
-
         # 计算alpha（0~255之间波动）
         alpha = int((math.sin(t * blink_speed) + 1) / 2 * 255)
 
         self.cursor_surface.fill((*LIGHT_BLUE, alpha))  # RGB + Alpha
+        font = pygame.font.SysFont(["Microsoft YaHei", "Arial"], 36)
 
-        self.cursor_rect.center = self.position
-        print(self.cursor_rect.center)
+        word_width = font.size(typed_text)[0]
+        self.cursor_x = TYPED_WORDS_ORIGIN_COORDINATES_X + word_width
+        self.cursor_rect.topleft = (self.cursor_x,TYPED_WORDS_ORIGIN_COORDINATES_Y + 12)
         screen.blit(self.cursor_surface, self.cursor_rect)
+        self.build_typed_text(screen, typed_text, color)
         
 
     def load_text(self, text, font_size, color, font_path=None):
@@ -63,7 +65,15 @@ class WordClass:
         self.rendered_surface = font.render(self.text, True, self.color)
 
         self.rendered_surface_rec = self.rendered_surface.get_rect(topleft=self.position) # 获取矩形对象
+        return self.rendered_surface, self.rendered_surface_rec
 
+    def build_typed_text(self,screen, typed_text, color):
+        font = pygame.font.SysFont(["Microsoft YaHei", "Arial"], 36)
+
+        self.typed_text = font.render(typed_text, True, color)
+        self.typed_text_rec = self.typed_text.get_rect(topleft=(TYPED_WORDS_ORIGIN_COORDINATES_X,TYPED_WORDS_ORIGIN_COORDINATES_Y)) # 获取矩形对象
+
+        screen.blit(self.typed_text, self.typed_text_rec)
     # def update_text(self, new_text):
     #     """更新文本内容"""
     #     self.text = new_text
@@ -93,31 +103,34 @@ class WordClass:
     #     self.rendered_surface_rec = self.rendered_surface.get_rect(topleft=self.position)
     #     surface.blit(self.rendered_surface, self.rendered_surface_rec)
 
-    def draw(self, surface,x,y):
-      """绘制到目标 surface，左边小于100的部分不显示"""
-      self.draw_cursor(surface)
-      # 让文字向左移动
-      if self.rendered_surface_rec.right < 100:
-          return
-      
-      self.position.x += 1
-      self.rendered_surface_rec.topleft = self.position
-      # print(self.rendered_surface_rec.right)
+    def draw(self, surface,x,y, typed_text, color):
+        """绘制到目标 surface，左边小于100的部分不显示"""
+        self.draw_cursor(surface, typed_text, color)
+        # 让文字向左移动
+        if self.rendered_surface_rec.right < 100:
+            return
 
-      # 定义裁剪区域（只显示 x >= 100 的部分）
-      clip_rect = pygame.Rect(x, y, surface.get_width() - 2 * x, surface.get_height())
+        #   self.position.x += 1
+        # if self.cursor_x >= 300:
+        #     self.position.x -= 1
 
-      # 保存原来的裁剪区域
-      old_clip = surface.get_clip()
+        self.rendered_surface_rec.topleft = self.position
+        # print(self.rendered_surface_rec.right)
 
-      # 设置裁剪区域
-      surface.set_clip(clip_rect)
+        # 定义裁剪区域（只显示 x >= 100 的部分）
+        clip_rect = pygame.Rect(x, y, surface.get_width() - 2 * x, surface.get_height())
 
-      # 绘制文字
-      surface.blit(self.rendered_surface, self.rendered_surface_rec)
+        # 保存原来的裁剪区域
+        old_clip = surface.get_clip()
 
-      # 恢复原来的裁剪区域
-      surface.set_clip(old_clip)
+        # 设置裁剪区域
+        surface.set_clip(clip_rect)
+
+        # 绘制文字
+        surface.blit(self.rendered_surface, self.rendered_surface_rec)
+
+        # 恢复原来的裁剪区域
+        surface.set_clip(old_clip)
 
     # def draw(self, surface):
     #   """绘制到目标 surface，x<100 的部分裁掉"""

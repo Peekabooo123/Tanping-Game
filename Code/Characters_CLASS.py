@@ -1,6 +1,6 @@
 import pygame
 
-from CONFIG_in_winsys import WIDTH, HEIGHT
+from CONFIG_in_winsys import WIDTH, HEIGHT, TYPED_WORDS, CHARACTER_SETTINGS, RED, GREEN
 
 class AnimatedSprite(pygame.sprite.Sprite):
     def __init__( self, image_paths, scale_flag=False, scale_size=(WIDTH, HEIGHT), flip_flag=False, remove_bg_flag=False, position=(0, 0), frame_delay=100):  
@@ -13,6 +13,10 @@ class AnimatedSprite(pygame.sprite.Sprite):
         self.position         = position
         self.current_point    = 0
         self.current_position = 0
+
+        self.typed_text       = TYPED_WORDS
+        self.is_moving = False
+        self.typed_text_color = RED
 
         self.frame_index      = 0   # 当前帧编号
         self.frame_delay      = frame_delay
@@ -48,26 +52,49 @@ class AnimatedSprite(pygame.sprite.Sprite):
         else:
             self.current_point = len(waypoints)
 
-    def manual_moving(self, waypoints, is_moving, speed = 1):
-        if is_moving and self.current_position < len(waypoints):
+    def manual_moving(self, waypoints, speed = 1):
+        if self.is_moving and self.current_position < len(waypoints):
 
             self.rect = self.image.get_rect(center = waypoints[self.current_position])
             self.current_position += speed
-            return not is_moving
+            self.is_moving = False
+            print('moving')
+            # return not is_moving
         
         if self.current_position >= len(waypoints):
-            
+
             self.current_position = len(waypoints)
             print('到达终点')
-            return not is_moving
+            # return not is_moving
         
 
-    def test(self, events):
+    def Control_logic(self, events, WORD_LIST, waypoints):
+    
+        # print(WORD_LIST)
         for event in events:
-            if event.type == pygame.TEXTINPUT: 
-                print(event.text)
-                pass  # event.text
+            if event.type == pygame.TEXTINPUT:
+                self.typed_text += event.text
+                print(self.typed_text)
+                print(WORD_LIST)
 
+                # 检查输入内容是否在词库中
+                if self.typed_text in WORD_LIST:  ########################存在重大 BUG !!!!!!!
+                    self.is_moving = True
+                    self.typed_text_color = GREEN
+                    self.manual_moving(waypoints, CHARACTER_SETTINGS['CAT']['speed'])
+
+                    print('ok')
+                else:
+                    self.typed_text_color = RED
+                    # 更换颜色
+                    print('no')
+
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_BACKSPACE:
+                    self.typed_text = self.typed_text[:-1]
+        return  self.typed_text, self.typed_text_color
+
+        # color = GREEN if not error_flag else RED
     def update(self):
         now = pygame.time.get_ticks()
         if now - self.last_update > self.frame_delay:

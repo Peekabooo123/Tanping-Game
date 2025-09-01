@@ -7,7 +7,7 @@ HEIGHT = 960
 FPS = 60
 BACKGROUND_PIC = ["images/BackGround/Background/parallax-mountain-bg.png", ]
 
-STEPS = 500  # 贝塞尔曲线的细分步数
+STEPS = 10000 # 贝塞尔曲线的细分步数
 
 
 ROAD_CURVE_POINTS = [
@@ -44,7 +44,7 @@ SCORE_PER_LEVEL = 10
 # Text settings
 TITLE_FONT_SIZE = 40
 MAIN_FONT_SIZE  = 20
-SMALL_FONT_SIZE = 24
+SMALL_FONT_SIZE = 12
 
 # Initialize Pygame
 pygame.font.init()
@@ -109,7 +109,7 @@ CHARACTER_SETTINGS = {
                             'images/Character/CAT/walk/5.png',],
         'remove_bg_flag'      : True,
         'flip_flag'    : True,
-        'speed'        : int(2 * STEPS/len(WORD_LIST[0]) + 1), # 每次移动的点数
+        'speed'        : 60,#int(2 * STEPS/len(WORD_LIST[0]) + 1), # 每次移动的点数
     },
     
 }
@@ -124,8 +124,8 @@ REC_COLOR                    = (30, 40, 70)  # 矩形背景颜色
 REC_BORDER_COLOR             = (60, 70, 120) # 矩形边
 
 REC_ORIGIN_COORDINATES_X     = WORD_ORIGIN_COORDINATES_X - 10   # 矩形原点坐标X
-REC_ORIGIN_COORDINATES_Y     = WORD_ORIGIN_COORDINATES_Y - 5       # 矩形原点坐标Y
+REC_ORIGIN_COORDINATES_Y     = WORD_ORIGIN_COORDINATES_Y - 5 - 30      # 矩形原点坐标Y
 
 REC_WIDTH                    = WIDTH - REC_ORIGIN_COORDINATES_X * 2
-REC_HEIGHT                   = LETTER_HEIGHT * 4 + 10
+REC_HEIGHT                   = LETTER_HEIGHT * 4 + 10 + 30
 

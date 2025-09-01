@@ -1,6 +1,3 @@
-# 安装 pykakasi
-# pip install pykakasi
-
 import pykakasi
 
 # 初始化转换器
@@ -14,6 +11,10 @@ converter = kks.getConverter()
 
 # 输入日文字符串
 text   = "舗装された道路やコンクリートのビルが集まる都市は、大雨が降ると排水が追いつかなくなり「内水氾濫」が発生します。あふれた水は地下室や地下街に集まり被害が出る危険があります。短時間に一気に状況が悪化するのが特徴で、気象情報などを見て早めに危険を察知し、安全な場所へ避難することが大切です。"
-result = converter.do(text)
+def convert_japan_to_roma(text):
+    result = converter.do(text)
+    return result
+
+result = convert_japan_to_roma(text)
 
 print(result)  # watashi ha gakusei desu

@@ -9,9 +9,10 @@ from Word_CLASS import WordClass
 import os
 import japan_to_roma as convert
 os.environ["SDL_IME_SHOW_UI"] = "1"  # 让系统输入法候选框显示
+
 # 初始化pygame
 pygame.init()
-pygame.key.start_text_input()
+# pygame.key.start_text_input()
 
 # 设置窗口
 screen_flag = pygame.HWSURFACE | pygame.DOUBLEBUF
@@ -22,11 +23,10 @@ pygame.display.set_caption("Tanping Game")
 color = WHITE
 typed_letter = "舗装された道路やコンクリートのビルが集まる都市は、大雨が降ると排水が追いつかなくなり「内水氾濫」が発生します。"
 typed_letter = TYPED_WORDS
-# cursor_x = 70
-# cursor_y = HEIGHT - 140 + LETTER_HEIGHT*2
+
 error_flag = False
 start_point = (15, 780)
-Language = 1
+Language = 0  # 0:en 1:日文 2:中文
 #===================================================================================
 
 

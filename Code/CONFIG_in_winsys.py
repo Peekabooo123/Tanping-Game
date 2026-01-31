@@ -2,16 +2,13 @@ import pygame
 import sys
 
 # Screen settings
-WIDTH = 1200
-HEIGHT = 800
+WIDTH = 1720
+HEIGHT = 960
 FPS = 60
-BACKGROUND_PIC = [
-    "images/BackGround/parallax-mountain-bg.png", 
-    "images/BackGround/landscape.png",
-    ]
+BACKGROUND_PIC = ["images/BackGround/Background/parallax-mountain-bg.png", ]
 
+STEPS = 10000 # 贝塞尔曲线的细分步数
 
-STEPS = 500  # 贝塞尔曲线的细分步数
 
 ROAD_CURVE_POINTS = [
     
@@ -47,10 +44,11 @@ SCORE_PER_LEVEL = 10
 # Text settings
 TITLE_FONT_SIZE = 40
 MAIN_FONT_SIZE  = 20
-SMALL_FONT_SIZE = 24
+SMALL_FONT_SIZE = 12
 
 # Initialize Pygame
-pygame.init()
+pygame.font.init()
+
 # 字体设置 - 使用系统默认字体以支持中文
 try:
     # 尝试使用微软雅黑或苹方字体（对中文支持较好的字体）
@@ -77,7 +75,8 @@ SOUND_FILES = {
 # Word list for typing
 WORD_LIST = [
     "In the heart of the forest, sunlight filters through the leaves, creating a dappled pattern on the ground. The gentle rustle of leaves and the sweet chirping of birds form a harmonious melody. This is the enchanting beauty of nature, a sight that soothes the soul.",
-    "舗装された道路やコンクリートのビルが集まる都市は、大雨が降ると排水が追いつかなくなり「内水氾濫」が発生します。あふれた水は地下室や地下街に集まり被害が出る危険があります。短時間に一気に状況が悪化するのが特徴で、気象情報などを見て早めに危険を察知し、安全な場所へ避難することが大切です。"
+    "舗装された道路やコンクリートのビルが集まる都市は、大雨が降ると排水が追いつかなくなり「内水氾濫」が発生します。あふれた水は地下室や地下街に集まり被害が出る危険があります。短時間に一気に状況が悪化するのが特徴で、気象情報などを見て早めに危険を察知し、安全な場所へ避難することが大切です。",
+    "在公园的长椅上，微风轻拂着树叶，孩子们在草地上欢快地奔跑。远处的湖面波光粼粼，老人们悠闲地散步，享受着宁静的午后时光。生活的美好往往藏在这些平凡的瞬间里。"
 ]
 # print(len(WORD_LIST[1]))
 
@@ -94,22 +93,39 @@ TYPED_WORDS_ORIGIN_COORDINATES_Y = WORD_ORIGIN_COORDINATES_Y + LETTER_HEIGHT * 2
 
 # Character settings
 CHARACTER_SETTINGS = {
-    'A': {
-        'position': ROAD_CURVE_POINTS[0],  # 起点,
-        'speed': int(2 * STEPS/len(WORD_LIST[0]) + 1), # 每次移动的点数
-        'image_path': "Code/images/Dragon - Fully Animated/Attack 1/001.png" if sys.platform == "darwin" else "images/Dragon - Fully Animated/Attack 1/001.png"
+    'CAT': {
+        'position'      : ROAD_CURVE_POINTS[0],  # 起点,
+        'running'       : ['images/Character/CAT/run/0.png', 
+                            'images/Character/CAT/run/1.png', 
+                            'images/Character/CAT/run/2.png', 
+                            'images/Character/CAT/run/3.png', 
+                            'images/Character/CAT/run/4.png', 
+                            'images/Character/CAT/run/5.png',],
+        'walk'          : ['images/Character/CAT/walk/0.png', 
+                            'images/Character/CAT/walk/1.png', 
+                            'images/Character/CAT/walk/2.png', 
+                            'images/Character/CAT/walk/3.png', 
+                            'images/Character/CAT/walk/4.png', 
+                            'images/Character/CAT/walk/5.png',],
+        'remove_bg_flag'      : True,
+        'flip_flag'    : True,
+        'speed'        : 60,#int(2 * STEPS/len(WORD_LIST[0]) + 1), # 每次移动的点数
     },
+    
 }
 
 # print(2 * STEPS / len(WORD_LIST[0]))
 
 '''rec width and height'''
+REC_PIC = [
+    "images/BackGround/dialog_box.png"
+]
 REC_COLOR                    = (30, 40, 70)  # 矩形背景颜色
 REC_BORDER_COLOR             = (60, 70, 120) # 矩形边
 
-REC_ORIGIN_COORDINATES_X     = WORD_ORIGIN_COORDINATES_X - 5   # 矩形原点坐标X
-REC_ORIGIN_COORDINATES_Y     = WORD_ORIGIN_COORDINATES_Y       # 矩形原点坐标Y
+REC_ORIGIN_COORDINATES_X     = WORD_ORIGIN_COORDINATES_X - 10   # 矩形原点坐标X
+REC_ORIGIN_COORDINATES_Y     = WORD_ORIGIN_COORDINATES_Y - 5 - 30      # 矩形原点坐标Y
 
 REC_WIDTH                    = WIDTH - REC_ORIGIN_COORDINATES_X * 2
-REC_HEIGHT                   = LETTER_HEIGHT * 4 + 4
+REC_HEIGHT                   = LETTER_HEIGHT * 4 + 10 + 30
 

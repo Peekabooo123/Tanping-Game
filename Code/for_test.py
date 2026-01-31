@@ -2,14 +2,13 @@ import pygame
 import sys
 import random
 import time
-from pygame import mixer
-from config import *
+from CONFIG import *
 from particle import ParticleSystem
 from audio import AudioManager
 
 # 初始化pygame
 pygame.init()
-mixer.init()
+
 
 # 屏幕设置
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -30,6 +29,7 @@ except:
 ###########################游戏人物class################################
 class Character:
     def __init__(self, x, y, character_type):
+        self.clock = pygame.time.Clock()
         self.x = x
         self.y = y
         self.type = character_type
@@ -130,6 +130,7 @@ class Map:
 # 游戏参数
 class Game:
     def __init__(self):
+        self.clock = pygame.time.Clock()
         self.police_pos = ROAD_CURVE_POINTS[0][0]  # 起点x坐标
         self.thief_pos = self.police_pos + 50
         self.thief_speed = INITIAL_THIEF_SPEED
@@ -218,45 +219,43 @@ class Game:
         pygame.draw.line(screen, RED,
                         (end_point[0], end_point[1] - ROAD_WIDTH//2),
                         (end_point[0], end_point[1] + ROAD_WIDTH//2), 5)
-        
+    
+    # 主游戏循环
+    def run_game(self):
+        running = True
+        while running:
+            # 事件处理
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                    # 退出游戏
+                    pygame.quit()
+                    sys.exit()
+ 
+            # 清空屏幕
+            screen.fill((0, 0, 0))
+            
+            # 绘制渐变背景
+            game.draw_gradient_background()
+
+            game.draw_typing_area() #绘制打字区域
+            game.draw_race_track() #绘制赛道和地图
+            
+
+            game.thief.draw(screen)
+            game.police.draw(screen)
+            game.police.move(-game.thief.speed, 0)
+
+            # 更新显示
+            pygame.display.flip()
+            
+            # 控制游戏帧率 (120 FPS)
+            self.clock.tick(120)
 
     def reset(self):
         self.__init__()
 
+if __name__ == "__main__":
 
-# 创建游戏实例
-game = Game()
-
-# 主游戏循环
-clock = pygame.time.Clock()
-running = True
-
-while running:
-    # 事件处理
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-    
-    # 清空屏幕
-    screen.fill((0, 0, 0))
-    
-    # 绘制渐变背景
-    game.draw_gradient_background()
-
-    game.draw_typing_area() #绘制打字区域
-    game.draw_race_track() #绘制赛道和地图
-    
-
-    game.thief.draw(screen)
-    game.police.draw(screen)
-    game.police.move(-game.thief.speed, 0)
-
-    # 更新显示
-    pygame.display.flip()
-    
-    # 控制游戏帧率 (120 FPS)
-    clock.tick(120)
-
-# 退出游戏
-pygame.quit()
-sys.exit()
+    game = Game()
+    game.run_game()

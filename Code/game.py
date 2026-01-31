@@ -3,7 +3,7 @@ import sys
 import random
 import time
 from pygame import mixer
-from config import *
+from CONFIG import *
 from particle import ParticleSystem
 from audio import AudioManager
 
